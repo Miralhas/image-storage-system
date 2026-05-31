@@ -1,9 +1,11 @@
-package miralhas.github.imagestoragesystem.infrastructure.service;
+package miralhas.github.imagestoragesystem.infrastructure.image.service;
 
 import lombok.RequiredArgsConstructor;
 import miralhas.github.imagestoragesystem.api.image.dto.NewImage;
 import miralhas.github.imagestoragesystem.config.properties.StorageProperties;
+import miralhas.github.imagestoragesystem.domain.image.model.enums.StorageProvider;
 import miralhas.github.imagestoragesystem.domain.image.service.contract.ImageStorageService;
+import miralhas.github.imagestoragesystem.domain.image.service.contract.StorableImage;
 import miralhas.github.imagestoragesystem.infrastructure.exception.StorageException;
 import miralhas.github.imagestoragesystem.shared.interfaces.MessageResolver;
 import org.springframework.stereotype.Service;
@@ -31,7 +33,7 @@ public class ImageLocalStorageService implements ImageStorageService {
 	}
 
 	@Override
-	public void save(NewImage image) {
+	public void save(StorableImage image) {
 		try {
 			var path = resolvePath(image.filePath());
 			FileCopyUtils.copy(image.inputStream(), Files.newOutputStream(path));
@@ -47,6 +49,11 @@ public class ImageLocalStorageService implements ImageStorageService {
 		} catch (IOException e) {
 			throw new StorageException(messageResolver.get("imageStorage.delete", filePath), e);
 		}
+	}
+
+	@Override
+	public StorageProvider getProvider() {
+		return StorageProvider.LOCAL;
 	}
 
 	private Path resolvePath(Path filePath) throws IOException {

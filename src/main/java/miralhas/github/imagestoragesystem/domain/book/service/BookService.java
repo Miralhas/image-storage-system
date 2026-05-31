@@ -56,7 +56,7 @@ public class BookService {
 	@Transactional
 	public List<Image> saveImage(Book book, List<NewImage> newImages) {
 		var images = imageService.save(newImages);
-		book.setImages(images);
+		book.addImages(images);
 		bookRepository.save(book);
 		return images;
 	}

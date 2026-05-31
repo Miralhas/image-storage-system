@@ -5,6 +5,7 @@ import miralhas.github.imagestoragesystem.api.image.dto.ImageSummaryDTO;
 import miralhas.github.imagestoragesystem.api.image.dto.NewImage;
 import miralhas.github.imagestoragesystem.api.image.dto.input.ImageInput;
 import miralhas.github.imagestoragesystem.domain.image.model.Image;
+import miralhas.github.imagestoragesystem.domain.image.model.enums.StorageProvider;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -48,14 +49,16 @@ public abstract class ImageMapper {
 
 	public List<NewImage> fromInput(ImageInput input, Path relativeFolder) throws IOException {
 		List<NewImage> newImages = new ArrayList<>();
-		for (MultipartFile file : input.files()) {
+		for (MultipartFile file : input.getFiles()) {
 			var newName = generateFileName(file.getOriginalFilename());
 			var newImage = new NewImage(
 					file.getInputStream(),
 					file.getContentType(),
 					file.getSize(),
 					relativeFolder,
-					newName
+					newName,
+					StorageProvider.valueOf(input.getStorageProvider())
+
 			);
 			newImages.add(newImage);
 		}

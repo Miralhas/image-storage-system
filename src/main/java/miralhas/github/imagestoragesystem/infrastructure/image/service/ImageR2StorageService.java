@@ -1,12 +1,12 @@
-package miralhas.github.imagestoragesystem.infrastructure.service;
+package miralhas.github.imagestoragesystem.infrastructure.image.service;
 
 import lombok.RequiredArgsConstructor;
-import miralhas.github.imagestoragesystem.api.image.dto.NewImage;
 import miralhas.github.imagestoragesystem.config.properties.StorageProperties;
+import miralhas.github.imagestoragesystem.domain.image.model.enums.StorageProvider;
 import miralhas.github.imagestoragesystem.domain.image.service.contract.ImageStorageService;
+import miralhas.github.imagestoragesystem.domain.image.service.contract.StorableImage;
 import miralhas.github.imagestoragesystem.infrastructure.exception.StorageException;
 import miralhas.github.imagestoragesystem.shared.interfaces.MessageResolver;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -18,7 +18,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Path;
 
-@Primary
 @Service
 @RequiredArgsConstructor
 public class ImageR2StorageService implements ImageStorageService {
@@ -41,7 +40,7 @@ public class ImageR2StorageService implements ImageStorageService {
 	}
 
 	@Override
-	public void save(NewImage image) {
+	public void save(StorableImage image) {
 		try {
 			PutObjectRequest request = PutObjectRequest.builder()
 					.bucket(storageProperties.r2().bucket())
@@ -66,6 +65,11 @@ public class ImageR2StorageService implements ImageStorageService {
 		} catch (Exception e) {
 			throw new StorageException(messageResolver.get("imageStorage.delete", filePath), e);
 		}
+	}
+
+	@Override
+	public StorageProvider getProvider() {
+		return StorageProvider.R2;
 	}
 
 	// R2 / S3 doesn't recognize Windows' folder separator structure (\) as a folder.

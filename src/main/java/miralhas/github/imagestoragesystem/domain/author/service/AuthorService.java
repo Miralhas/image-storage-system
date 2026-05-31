@@ -44,7 +44,7 @@ public class AuthorService {
 	@Transactional
 	public List<Image> saveImage(Author author, List<NewImage> newImages) {
 		var images = imageService.save(newImages);
-		author.setImages(images);
+		author.addImages(images);
 		authorRepository.save(author);
 		return images;
 	}

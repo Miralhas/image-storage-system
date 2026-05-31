@@ -58,6 +58,10 @@ public class Author implements HasImage {
 		this.slug = SLG.slugify(this.name);
 	}
 
+	public void addImages(List<Image> images) {
+		this.images.addAll(images);
+	}
+
 	@Override
 	public final boolean equals(Object o) {
 		if (this == o) return true;

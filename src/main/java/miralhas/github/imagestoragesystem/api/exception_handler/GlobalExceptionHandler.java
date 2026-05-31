@@ -6,6 +6,7 @@ import lombok.extern.log4j.Log4j2;
 import miralhas.github.imagestoragesystem.config.properties.StorageProperties;
 import miralhas.github.imagestoragesystem.domain.exception.BusinessException;
 import miralhas.github.imagestoragesystem.domain.exception.ResourceNotFoundException;
+import miralhas.github.imagestoragesystem.infrastructure.exception.InternalServerError;
 import miralhas.github.imagestoragesystem.shared.interfaces.MessageResolver;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.context.MessageSource;
@@ -42,9 +43,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(Exception.class)
 	public ProblemDetail handleUncaughtException(Exception ex, WebRequest webRequest) {
-		log.error("Internal Server Error Exception:", ex);
+		log.error("Uncaught Exception:", ex);
 		var status = HttpStatus.INTERNAL_SERVER_ERROR;
 		var detail = messageResolver.get("internalServerError");
+		var problemDetail = ProblemDetail.forStatusAndDetail(status, detail);
+		problemDetail.setTitle("Internal Server Error");
+		problemDetail.setType(URI.create(getBaseUrl(webRequest)+"/errors/internal-server-error"));
+		return problemDetail;
+	}
+
+	@ExceptionHandler(InternalServerError.class)
+	public ProblemDetail handleInternalServerError(Exception ex, WebRequest webRequest) {
+		log.error("Internal Server Error Exception:", ex);
+		var status = HttpStatus.INTERNAL_SERVER_ERROR;
+		var detail = ex.getMessage();
 		var problemDetail = ProblemDetail.forStatusAndDetail(status, detail);
 		problemDetail.setTitle("Internal Server Error");
 		problemDetail.setType(URI.create(getBaseUrl(webRequest)+"/errors/internal-server-error"));

@@ -55,8 +55,13 @@ public class Book implements HasImage {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<Image> images = new ArrayList<>();
 
+	@Override
 	public Path getImageRelativePath() {
 		return Path.of(this.getClass().getSimpleName(), "%d-%s".formatted(id, slug));
+	}
+
+	public void addImages(List<Image> images) {
+		this.images.addAll(images);
 	}
 
 	public void generateSlug() {

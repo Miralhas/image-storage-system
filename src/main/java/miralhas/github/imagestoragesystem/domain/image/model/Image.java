@@ -1,13 +1,11 @@
 package miralhas.github.imagestoragesystem.domain.image.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import miralhas.github.imagestoragesystem.domain.image.contract.HasImage;
+import miralhas.github.imagestoragesystem.domain.image.model.enums.StorageProvider;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.proxy.HibernateProxy;
@@ -21,7 +19,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class Image implements HasImage {
+public class Image {
 
 	@Id
 	@GeneratedValue(generator = "uuid2")
@@ -44,6 +42,10 @@ public class Image implements HasImage {
 
 	@UpdateTimestamp
 	private OffsetDateTime updatedAt;
+
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private StorageProvider storageProvider;
 
 	public Path getFilePath() {
 		return Path.of(relativeFolder, fileName);
