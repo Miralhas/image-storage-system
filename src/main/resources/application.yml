@@ -1,0 +1,29 @@
+server:
+  port: 8080
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 2MB
+  application:
+    name: server
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: admin
+    url: jdbc:mysql://localhost:3306/image_storage_system?createDatabaseIfNotExist=true&serverTimezone=UTC
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+      org:
+        hibernate:
+          flushMode: COMMIT
+
+storage:
+  multipart-max-file-size: ${spring.servlet.multipart.max-file-size}
+  local:
+    directory: C:\\Users\\bob\\Pictures\\image_storage_system
